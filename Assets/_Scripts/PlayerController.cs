@@ -7,20 +7,35 @@ public class PlayerController : MonoBehaviour {
 	public Boundary boundary;
 
 	// get a reference to the camera to make mouse input work
-	public Camera camera; 
+	public Camera _camera;
+    public GameController gameController;
 	
 	// PRIVATE INSTANCE VARIABLES
 	private Vector2 _newPosition = new Vector2(0.0f, 0.0f);
-	
-	// Use this for initialization
-	void Start () {
+    private int _livesValue;
 
-	}
+    //Public Properties
+
+    public int livesValue //updates power
+    {
+        get { return this._livesValue; }
+        set
+        {
+            this._livesValue = value;
+            this.gameController.livesLabel.text = "Lives: " + this._livesValue;
+        }
+    }
+
+    // Use this for initialization
+    void Start () {
+        this.livesValue = 5;
+    }
 
 	// Update is called once per frame
 	void Update () {
 		this._CheckInput ();
-	}
+
+    }
 
 	private void _CheckInput() {
 		this._newPosition = gameObject.GetComponent<Transform> ().position; // current position
@@ -38,7 +53,7 @@ public class PlayerController : MonoBehaviour {
 
 		// movement by mouse
 		Vector2 mousePosition = Input.mousePosition;
-		this._newPosition.x = this.camera.ScreenToWorldPoint (mousePosition).x;
+		this._newPosition.x = this._camera.ScreenToWorldPoint (mousePosition).x;
 
 		this._BoundaryCheck ();
 
@@ -54,4 +69,33 @@ public class PlayerController : MonoBehaviour {
 			this._newPosition.x = this.boundary.xMax;
 		}
 	}
+
+    private void OnCollisionEnter2D(Collision2D other)
+    {
+
+        //hit by enemy
+        if (other.gameObject.CompareTag("Enemy"))
+        {
+            this.livesValue -= 1;
+
+            if (livesValue <= 0)
+            {
+                gameController.gameOver();
+            }
+
+        }
+
+        //hit by boss
+        if (other.gameObject.CompareTag("Boss"))
+        {
+            this.livesValue -= 1;
+
+            if (livesValue <= 0)
+            {
+                gameController.gameOver();
+            }
+        }
+
+
+    }
 }
