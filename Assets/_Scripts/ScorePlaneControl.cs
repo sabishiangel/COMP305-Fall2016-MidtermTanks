@@ -35,7 +35,7 @@ public class ScorePlaneControl : MonoBehaviour {
         if (other.gameObject.CompareTag("Enemy"))
         {
 
-            this.scoreValue += 10;
+            this.scoreValue += 100;
             pointSound.Play();
 
             if(scoreValue == 500)
