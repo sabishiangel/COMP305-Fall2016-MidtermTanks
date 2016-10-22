@@ -5,6 +5,7 @@ public class ScorePlaneControl : MonoBehaviour {
 
     //Public Instance Variables
     public GameController gameController;
+    public AudioSource pointSound;
 
     //Public Properties
 
@@ -35,7 +36,26 @@ public class ScorePlaneControl : MonoBehaviour {
         {
 
             this.scoreValue += 10;
+            pointSound.Play();
+
+            if(scoreValue == 500)
+            {
+                Instantiate(gameController.boss);
+            }
+
+            if (scoreValue == 1000)
+            {
+                Instantiate(gameController.boss);
+            }
+        }
+
+        if (other.gameObject.CompareTag("Boss"))
+        {
+
+            this.scoreValue += 20;
+            pointSound.Play();
             Debug.Log("SCORE");
+
         }
     }
 

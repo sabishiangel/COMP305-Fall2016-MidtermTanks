@@ -9,9 +9,20 @@ public class PlayerController : MonoBehaviour {
 	// get a reference to the camera to make mouse input work
 	public Camera _camera;
     public GameController gameController;
-	
-	// PRIVATE INSTANCE VARIABLES
-	private Vector2 _newPosition = new Vector2(0.0f, 0.0f);
+    public GameObject attack;
+    public float timeBetweenFires = 3f;
+    public float lastFired = -100f;
+    public float attackSpeed;
+    public Transform sightStart;
+    public Transform sightEnd;
+
+    [Header("Audio")]
+    public AudioSource hitSound;
+    public AudioSource tankSound;
+    public AudioSource shoot;
+
+    // PRIVATE INSTANCE VARIABLES
+    private Vector2 _newPosition = new Vector2(0.0f, 0.0f);
     private int _livesValue;
 
     //Public Properties
@@ -29,11 +40,19 @@ public class PlayerController : MonoBehaviour {
     // Use this for initialization
     void Start () {
         this.livesValue = 5;
+        tankSound.Play();
+        tankSound.loop = true;
     }
 
 	// Update is called once per frame
 	void Update () {
 		this._CheckInput ();
+        Debug.DrawLine(this.sightStart.position, this.sightEnd.position);
+
+        if (Input.GetMouseButtonDown(1))
+        {
+                this.Attack();
+        }
 
     }
 
@@ -77,10 +96,12 @@ public class PlayerController : MonoBehaviour {
         if (other.gameObject.CompareTag("Enemy"))
         {
             this.livesValue -= 1;
+            hitSound.Play();
 
             if (livesValue <= 0)
             {
                 gameController.gameOver();
+                tankSound.Stop();
             }
 
         }
@@ -89,13 +110,31 @@ public class PlayerController : MonoBehaviour {
         if (other.gameObject.CompareTag("Boss"))
         {
             this.livesValue -= 1;
-
+            hitSound.Play();
             if (livesValue <= 0)
             {
                 gameController.gameOver();
             }
         }
 
+    }
+
+    void Attack()
+    {
+
+        if (Time.time < lastFired + timeBetweenFires)
+        {
+            return;
+        }
+
+        lastFired = Time.time;
+
+        GameObject attackShot = (GameObject)Instantiate(attack, transform.position, transform.rotation);
+        attackShot.transform.position = transform.position;
+        shoot.Play();
+        Vector2 direction = sightEnd.transform.position - attackShot.transform.position;
+
+        attackShot.GetComponent<ShellScript>().setDirection(direction);
 
     }
 }

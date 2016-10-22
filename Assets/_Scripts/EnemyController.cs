@@ -62,5 +62,11 @@ public class EnemyController : MonoBehaviour {
             _Reset();
 
         }
+
+        if (other.gameObject.CompareTag("Bullet"))
+        {
+            _Reset();
+
+        }
     }
 }

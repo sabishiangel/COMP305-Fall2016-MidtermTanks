@@ -6,7 +6,8 @@ using UnityEngine.SceneManagement;
 public class GameController : MonoBehaviour {
 	// PUBLIC INSTANCE VARIABLES
 	public int tankCount;
-	public GameObject tank;
+    public int bossTankCount;
+    public GameObject tank;
     public int _score;
 
     [Header("Labels")]
@@ -30,7 +31,9 @@ public class GameController : MonoBehaviour {
     void Start () {
 		this._GenerateTanks ();
         this.hideLabels();
-	}
+        BGM.Play();
+        BGM.loop = true;
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -43,6 +46,14 @@ public class GameController : MonoBehaviour {
 			Instantiate(tank);
 		}
 	}
+
+    private void _GenerateBossTanks()
+    {
+        for (int count = 0; count < this.bossTankCount; count++)
+        {
+            Instantiate(boss);
+        }
+    }
 
     //Hide labels
     private void hideLabels()
@@ -61,6 +72,9 @@ public class GameController : MonoBehaviour {
         scoreLabel.gameObject.SetActive(false);
         player.gameObject.SetActive(false);
         scorePlane.gameObject.SetActive(false);
+        BGM.Stop();
+        endBGM.Play();
+        endBGM.loop = true;
 }
 
     public void restart_click()
